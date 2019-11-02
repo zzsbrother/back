@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.zw.back.dao.IProductDao">
+    <resultMap id="ProMap" type="ProductExt">
+        <id column="pid" property="pid" />
+        <result column="image" property="image" />
+        <result column="marketprice" property="marketprice" />
+        <result column="shopprice" property="shopprice" />
+        <result column="pname" property="pname" />
+        <association property="category" javaType="Category">
+            <id column="cid" property="cid" />
+            <result column="cname" property="cname" />
+        </association>
+        <association property="categorySecond" javaType="CategorySecond">
+            <id column="csid" property="csid" />
+            <result column="csname" property="csname" />
+        </association>
+    </resultMap>
+
+    <select id="proList" resultMap="ProMap" parameterType="ProPage">
+        select c.cid,c.cname,cs.csid,cs.csname,p.image,p.marketprice,p.shopprice,p.pname,p.pid
+        from category c INNER JOIN categorysecond cs
+        on c.cid=cs.cid
+        INNER JOIN product p
+        on cs.csid=p.csid
+        <where>
+            <if test="cid!=0">
+                and c.cid = #{cid}
+            </if>
+            <if test="csid!=0">
+                and p.csid = #{csid}
+            </if>
+            <if test="pname!=null">
+                and p.pname like '%${pname}%'
+            </if>
+        </where>
+        order by p.pid DESC
+        limit #{pageall},#{pagesize}
+    </select>
+    <select id="getProListNumber" parameterType="ProPage" resultType="Integer">
+        select count(*)
+        from category c INNER JOIN categorysecond cs
+        on c.cid=cs.cid
+        INNER JOIN product p
+        on cs.csid=p.csid
+        <where>
+            <if test="cid!=0">
+                and c.cid = #{cid}
+            </if>
+            <if test="csid!=0">
+                and p.csid = #{csid}
+            </if>
+            <if test="pname!=null">
+                and p.pname like '%${pname}%'
+            </if>
+        </where>
+        order by p.pid DESC
+    </select>
+
+    <delete id="deleteProduct" parameterType="Integer">
+        DELETE from product where csid=#{cid}
+    </delete>
+</mapper>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.zw.back.dao.IUserDao">
+    <select id="login" parameterType="User" resultType="User">
+        SELECT * from user where username=#{username} and password=#{password}
+    </select>
+
+    <select id="getList" parameterType="UserPage" resultType="User">
+        select *
+        from user u
+        <where>
+            <if test="username!=null">
+                and u.username like '%${username}%'
+            </if>
+        </where>
+        order by u.uid DESC
+        limit #{pageall},#{pagesize}
+    </select>
+
+    <select id="getListCount" parameterType="UserPage" resultType="Integer">
+        select count(*)
+        from user u
+        <where>
+            <if test="username!=null">
+                and u.username like '%${username}%'
+            </if>
+        </where>
+        order by u.uid DESC
+    </select>
+
+    <update id="updata" parameterType="User">
+        update user set state=#{state} where uid=#{uid}
+    </update>
+</mapper>

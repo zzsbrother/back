@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 设置为IUserDao接口方法提供sql语句配置 -->
+<mapper namespace="com.zw.back.dao.ICategoryDao">
+    <select id="categoryList" resultType="Category">
+        select * from category c
+        order by c.order
+    </select>
+
+    <select id="categorySecondList" resultType="CategorySecond">
+        select * from categorysecond
+    </select>
+
+    <select id="getCategorySecond" parameterType="Integer" resultType="CategorySecond">
+        select * from categorysecond cs
+        where cs.cid=#{cid}
+    </select>
+
+    <select id="getCatePage" parameterType="CatePage" resultType="CategorySecond">
+        select * from categorysecond cs
+        order by cs.csid
+        limit #{pageall},#{pagesize}
+    </select>
+    <select id="getCatePageNum" parameterType="CatePage" resultType="Integer">
+        select count(*) from categorysecond cs
+    </select>
+    <!--  二级类目增删改  -->
+    <insert id="addCategorySecond" parameterType="CategorySecond">
+        insert into categorysecond(csname,cid) values (#{csname},#{cid})
+    </insert>
+
+    <update id="updataCategorySecond" parameterType="CategorySecond">
+        update categorysecond set csname=#{csname},cid=#{cid} where csid=#{csid}
+    </update>
+
+    <delete id="delete" parameterType="Integer">
+        delete from categorysecond where csid=#{csid}
+    </delete>
+
+    <!--  一级类目增删改  -->
+    <insert id="addCategory" parameterType="Category">
+        insert into category(cname,`order`) values (#{cname},#{order})
+    </insert>
+
+    <update id="updataCategory" parameterType="CategoryExt">
+        UPDATE category c SET c.`order`=#{order},c.cname=#{cname} where c.`order`=#{oldorder}
+    </update>
+
+    <update id="updataCategoryTwo" parameterType="CategoryExt">
+        UPDATE category c SET c.`order`=#{order} where c.`order`=#{oldorder}
+    </update>
+
+    <update id="updataCategoryByID" parameterType="CategoryExt">
+        UPDATE category c SET c.`order`=#{order},c.cname=#{cname} where c.cid=#{cid}
+    </update>
+
+    <select id="getdeleteCategorySecond" parameterType="Integer" resultType="Integer">
+        select cs.csid from categorysecond cs where cs.cid=#{cid}
+    </select>
+
+    <delete id="deleteCategorySecond" parameterType="Integer">
+        delete from categorysecond where cid=#{cid}
+    </delete>
+
+    <delete id="deleteCategoryByID" parameterType="Integer">
+        delete from category where cid=#{cid}
+    </delete>
+</mapper>
